@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { Post } from '../post.model';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PostsService } from '../posts.service';
 
@@ -9,21 +8,19 @@ import { PostsService } from '../posts.service';
   styleUrls: ['./post-create.component.css']
 })
 export class PostCreateComponent {
-  enteredContent = '';
+
   enteredTitle = '';
+  enteredContent = '';
 
   constructor(public postsService: PostsService) {}
 
-  onAddPost(form:NgForm) {
+  onAddPost(form: NgForm) {
     if (form.invalid)
     {
-      return
+      return;
     }
-    const post: Post = {
-      title: form.value.title,
-      content: form.value.content
-    };
-    this.postsService.addPost(form.value.title, form.value.content)
-    form.resetForm() //clear the form
+
+    this.postsService.addPost(form.value.title, form.value.content);
+    form.resetForm(); //clear the form
   }
 }
