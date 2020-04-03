@@ -3,6 +3,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatButtonModule } from '@angular/material/button'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatExpansionModule } from '@angular/material/expansion'
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -14,6 +15,7 @@ import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import { HttpClientModule } from "@angular/common/http"
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +24,7 @@ import { HttpClientModule } from "@angular/common/http"
     PostListComponent
   ],
   imports: [
+    AppRoutingModule,
     HttpClientModule,
     MatExpansionModule,
     MatButtonModule,
@@ -31,7 +34,8 @@ import { HttpClientModule } from "@angular/common/http"
     MatCardModule,
     AppRoutingModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
