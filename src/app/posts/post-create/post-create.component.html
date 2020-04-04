@@ -1,19 +1,23 @@
 <mat-card>
   <!-- show spinner if nfIf is true -->
   <mat-spinner *ngIf="loading"></mat-spinner>
-  <form (submit)="onSave(postForm)" #postForm="ngForm" *ngIf="!loading">
+  <form [formGroup]="form" (submit)="onSave()" *ngIf="!loading">
     <mat-form-field>
-      <input matInput type="text" name="title" [ngModel]="post?.title" required  placeholder="Title of Post" #title="ngModel">
-      <mat-error *ngIf=title.invalid>Please enter the title of the post. </mat-error>
+      <input matInput type="text" name="title" formControlName="title" placeholder="Title of Post" >
+      <mat-error *ngIf="form.get('title').invalid">Please enter the title of the post. </mat-error>
     </mat-form-field>
   <mat-form-field>
-  <textarea matInput rows="6" name="content" [ngModel]="post?.content" required placeholder="Body of Post" #content="ngModel"></textarea>
-  <mat-error *ngIf=title.invalid>Please enter the content of a post. </mat-error>
+  <textarea matInput rows="6" name="content" formControlName="content" placeholder="Body of Post" ></textarea>
+  <mat-error *ngIf="form.get('content').invalid">Please enter the content of a post. </mat-error>
   </mat-form-field>
   <div>
     <button mat-mat-stroked-button type="button" (click)="addfile.click()">Insert Image</button>
-    <input type ="file" #addfile>
+    <input type ="file" #addfile (change)="imageSelect($event)">
   </div>
+  <div class="image-preview" *ngIf="imgPrev !== '' && imgPrev && form.get('image').valid">
+    <img [src]="imgPrev" [alt]="form.value.title">
+  </div>
+
   <button mat-raised-button color="primary" type="submit">Save Post</button>
   </form>
 

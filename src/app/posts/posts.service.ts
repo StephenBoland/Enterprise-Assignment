@@ -42,13 +42,15 @@ export class PostsService {
     return this.httpclient.get<{_id: string, title:string, content:string}>('http://localhost:3000/api/posts/' + id);
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { id: null, title: title, content: content };
+  addPost(title: string, content: string, image:File) {
+    const postContent = new FormData(); //form data lets combination of text and file values
+    postContent.append("title",title);
+    postContent.append("content",content);
+    postContent.append("image", image, title); //pass img + title of the img
     this.httpclient
-      .post<{ message: string, postId : string }> ("http://localhost:3000/api/posts", post)
+      .post<{ message: string, postId:string }> ("http://localhost:3000/api/posts", postContent)
       .subscribe(responseData => {
-        const id = responseData.postId;  // overwrting the null id to the id made when entered to the db to prevent a 'null' being passed in url
-        post.id = id;
+        const post: Post = {id: responseData.postId, title:title, content:content};
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
         this.router.navigate(["/"]); //re-routing the user

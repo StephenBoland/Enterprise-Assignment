@@ -1,8 +1,33 @@
 const express = require("express");
 const app = express.Router();
+const multer = require("multer");
 const Post = require('../models/post') // import post model
 
-app.post("", (req, res, next) => { //POST to /api/posts
+const types = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg'
+};
+
+const store = multer.diskStorage({
+  destination: (req,file,cb) => {
+    //error check if file type not in types
+    const isValid = types[file.mimetype];
+    let error = new Error("Invalid type");
+    if (isValid) {
+      error = null; // no error if type is right
+    }
+
+    cb(null, "backend/imageStore");
+  },
+  filename: (req, file, cb) => {
+    const fname = file.originalname.toLowerCase().split(' ').join('-');
+    const extension = types[file.mimetype]; //getting extension of file
+    cb(null, name + '-' + Date.now() + '.' + ext); //pass this info to malter in a proper filename format
+  }
+}); //check github
+//malter will look for a single file from image
+app.post("", multer({store:store}).single("image"), (req, res, next) => { //POST to /api/posts
   const post = new Post ({ // pass in the model content
     title: req.body.title,
     content:req.body.content

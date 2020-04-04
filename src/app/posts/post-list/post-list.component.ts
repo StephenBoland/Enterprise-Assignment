@@ -16,8 +16,10 @@ export class PostListComponent implements OnInit, OnDestroy {
   constructor(public postsService: PostsService) {}
 
   ngOnInit(){
+    this.loading = true; //display spinner while doing action
     this.postsService.getPosts();
     this.postsSub = this.postsService.getPostUpdateListener().subscribe((posts: Post[]) => {
+      this.loading = false; //hide spinner after action complete
       this.posts = posts;
     });
   }
