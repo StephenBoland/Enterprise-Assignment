@@ -2,12 +2,12 @@ import { AbstractControl } from '@angular/forms';
 import { Observable, Observer } from 'rxjs';
 
 //there is no build in validator for an image, so here we build this
-export const imgType = (control: AbstractControl): Promise<{[key:string]:any}> | Observable<{[key:string]:any}> => {
+export const imgType = (  control: AbstractControl): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {
   const chosenfile = control.value as File;
   const fileReader = new FileReader();
   const obs = Observable.create((observer:Observer<{[key:string]:any}>) => {
     fileReader.addEventListener("loadend", () => {
-      const array = new Uint8Array(fileReader.result as ArrayBuffer).subarray(0,4); //read certain patterns using 8array
+      const array = new Uint8Array(fileReader.result as ArrayBuffer).subarray(0, 4); //read certain patterns using 8array
       let header = "";
       let isValid = false;
       for (let i = 0; i< array.length; i++){

@@ -10,32 +10,37 @@ const types = {
 };
 
 const store = multer.diskStorage({
-  destination: (req,file,cb) => {
+  destination: (req, file, cb) => {
     //error check if file type not in types
     const isValid = types[file.mimetype];
     let error = new Error("Invalid type");
     if (isValid) {
       error = null; // no error if type is right
     }
-
-    cb(null, "backend/imageStore");
+    cb(null, "backend/images");
   },
   filename: (req, file, cb) => {
     const fname = file.originalname.toLowerCase().split(' ').join('-');
     const extension = types[file.mimetype]; //getting extension of file
-    cb(null, name + '-' + Date.now() + '.' + ext); //pass this info to malter in a proper filename format
+    cb(null, fname + '-' + Date.now() + '.' + extension); //pass this info to malter in a proper filename format
   }
 }); //check github
+
 //malter will look for a single file from image
-app.post("", multer({store:store}).single("image"), (req, res, next) => { //POST to /api/posts
+app.post("", multer({store: store }).single("image"), (req, res, next) => { //POST to /api/posts
+  const url = req.protocol + '://' + req.get("host");
   const post = new Post ({ // pass in the model content
     title: req.body.title,
-    content:req.body.content
+    content:req.body.content,
+    imgPath: url + "/image/" + req.file.filename // the img path want to store in db
   });
   post.save().then(postCreated => {
     res.status(201).json({
       message: "post was added",
-      postId: postCreated._id
+      post: {
+        ...postCreated,
+        id: postCreated._id
+      }
   }); //save the post to mongodb
 
   }); //return json data and status code 201 for confirmation of post added
