@@ -1,18 +1,16 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { PostListComponent } from './posts/post-list/post-list.component';
-import { PostCreateComponent } from './posts/post-create/post-create.component';
-
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { PostListComponent } from "./posts/post-list/post-list.component";
+import { PostCreateComponent } from "./posts/post-create/post-create.component";
 
 const routes: Routes = [
-  { path: '', component: PostListComponent }, //empty means home page
-  { path: 'createpost', component:PostCreateComponent },
-  { path: 'editpost/:postId', component:PostCreateComponent } //dynamic post ID so we know what post to edit
+  { path: '', component: PostListComponent },
+  { path: 'createpost', component: PostCreateComponent }, //create post page
+  { path: 'editpost/:postId', component: PostCreateComponent }, //edit post page
 ];
 
-//letting angular know about the routes
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -1,86 +1,118 @@
-import { Post } from './post.model';
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http'
-import { map } from 'rxjs/operators';
-import { Router } from '@angular/router';
-@Injectable({providedIn:"root"})
+import { Post } from "./post.model";
 
-export class PostsService {
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+
+
+import { map } from "rxjs/operators";
+import { Router } from "@angular/router";
+import { Subject } from "rxjs";
+
+
+@Injectable({ providedIn: "root" })
+
+export class PostManage {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private p_Updated = new Subject<Post[]>();
 
-  constructor(private httpclient: HttpClient, private router: Router) {}
+  constructor(private httpClient: HttpClient, private router: Router) {}
 
   getPosts() {
-    this.httpclient
-      .get<{ message: string; posts: any }>(
-        "http://localhost:3000/api/posts"
+    this.httpClient
+      .get<{ message: string; posts: any }>
+      ("http://localhost:3000/api/posts")
+      //fixing _id db issue
+      .pipe(map(postContent => {
+          return postContent.posts.map(post => {
+            return {
+              title: post.title,
+              content: post.content,
+              id: post._id,
+              imgPath: post.imgPath
+            };
+          });
+        })
       )
-      //fixing _id issue
-      .pipe(map((postData) => {
-        return postData.posts.map(post => {
-          return {
-            title : post.title,
-            content: post.content,
-            id: post._id,
-            imgPath: post.imgPath
-          };
-        });
-      }))
-      .subscribe(Fixedpost => {
-        this.posts = Fixedpost;
-        this.postsUpdated.next([...this.posts]);
+      .subscribe(fixedPost => {
+        this.posts = fixedPost;
+        this.p_Updated.next([...this.posts]);
       });
   }
-//returns an object which we can listen but cannot emmit
-  getPostUpdateListener() {
-    return this.postsUpdated.asObservable();
+
+  postUpdateListener() {
+    return this.p_Updated.asObservable();
   }
 
-  retrievePost(id: string)
-  {
-    return this.httpclient.get<{_id: string, title:string, content:string }>('http://localhost:3000/api/posts/' + id);
+  retrievePost(id: string) {
+    return this.httpClient.get<{ _id: string, title: string, content: string, imgPath: string }>( //expect the args + image path from db
+      "http://localhost:3000/api/posts/" + id
+    );
   }
 
-  addPost(title: string, content: string, image: File) {
+  p_add(title: string, content: string, image: File) {
     const postContent = new FormData(); //form data lets combination of text and file values
     postContent.append("title", title);
     postContent.append("content", content);
-    postContent.append("image", image, title); //pass img + title of the img
-    this.httpclient
-      .post<{ message: string, post: Post }> ("http://localhost:3000/api/posts", postContent)
+    postContent.append("image", image, title);
+    this.httpClient
+      .post<{ message: string; post: Post }>(
+        "http://localhost:3000/api/posts",
+        postContent
+      )
       .subscribe(responseData => {
-        const post: Post = { id: responseData.post.id, title: title, content: content, imgPath: responseData.post.imgPath}; //create post
+        const post: Post = {
+          id: responseData.post.id,
+          title: title,
+          content: content,
+          imgPath: responseData.post.imgPath
+        };
         this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
-        this.router.navigate(["/"]); //re-routing the user
+        this.p_Updated.next([...this.posts]);
+        this.router.navigate(["/"]);
+      });
+  }
+//executed upon saving an edit
+  updatePost(id: string, title: string, content: string, image: File | string) { //passing in the contents expected from update
+    let postContent: Post | FormData; //post content will always exist
+    if (typeof image === "object") { //checking for image type
+      postContent = new FormData(); //Need this for uploading new image.
+      postContent.append("id", id); //append ID or server will try generate a new one and break
+      postContent.append("title", title);
+      postContent.append("content", content);
+      postContent.append("image", image, title);
+    } else {
+      postContent = { //save the form with new content
+        id: id,
+        title: title,
+        content: content,
+        imgPath: image
+      };
+    }
+    this.httpClient
+      .put("http://localhost:3000/api/posts/" + id, postContent)
+      .subscribe(response => {
+        const updatedPosts = [...this.posts];
+        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+        const post: Post = { //save the form with new content
+          id: id,
+          title: title,
+          content: content,
+          imgPath: "" //getting img path back from mongo
+        };
+        updatedPosts[oldPostIndex] = post;
+        this.posts = updatedPosts;
+        this.p_Updated.next([...this.posts]);
+        this.router.navigate(["/"]);//re-routing the user
       });
   }
 
-
-  updatePost(id: string, title:string, content:string )
-  {
-    const post: Post = {
-      id: id, title:title, content:content, imgPath: null
-    };
-    this.httpclient.put('http://localhost:3000/api/posts/' + id, post).subscribe(
-      response => {
-        const updatePosts = [...this.posts];
-        const oldPost = updatePosts.findIndex(x => x.id === post.id);
-        updatePosts[oldPost] = post;
-        this.posts = updatePosts;
-        this.postsUpdated.next([...this.posts]);
-        this.router.navigate(["/"]); //re-routing the user
-
+  deletePost(postId: string) {
+    this.httpClient
+      .delete("http://localhost:3000/api/posts/" + postId)
+      .subscribe(() => {
+        const updatedPosts = this.posts.filter(post => post.id !== postId);//Keep entries where claus is not equal, delete where it is equal.S
+        this.posts = updatedPosts;
+        this.p_Updated.next([...this.posts]);
       });
   }
-//Delete posts method
-deletePost(postId: string) {
-  this.httpclient.delete("http://localhost:3000/api/posts/" + postId).subscribe(() => {
-    const updatePostView = this.posts.filter(post => post.id !== postId); //Keep entries where claus is not equal, delete where it is equal.
-    this.posts = updatePostView;
-    this.postsUpdated.next([...this.posts])
-  });
-}
 }

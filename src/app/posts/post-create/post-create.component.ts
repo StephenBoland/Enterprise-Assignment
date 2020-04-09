@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormControl, Validators, RequiredValidator } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 
-import { PostsService } from "../posts.service";
+import { PostManage } from "../posts.service";
 import { Post } from "../post.model";
-import { imgType } from "./img-validator"; //attaching the img validator
+import { mimeType } from "./mime-type.validator"; //attaching the img validator
+
 @Component({
   selector: "app-post-create",
   templateUrl: "./post-create.component.html",
@@ -19,70 +20,74 @@ export class PostCreateComponent implements OnInit {
   private mode = "create";
   private postId: string;
   imgPrev: string;
+
   constructor(
-    public postsService: PostsService,
+    public PostManage: PostManage,
     public route: ActivatedRoute
   ) {}
 
   ngOnInit() { //form
-    this.form = new FormGroup({ //init the form
-      title: new FormControl(null, {validators: [Validators.required, Validators.minLength(5)]}), //null if creating post
-      content: new FormControl(null, {validators:[Validators.required, Validators.minLength(5)]}), //using validators to make form input required
-      image: new FormControl(null, {validators: [Validators.required], asyncValidators:[imgType]})
+    this.form = new FormGroup({ //initializing the form
+      title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)]}),
+      content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, {validators: [Validators.required],asyncValidators: [mimeType]})
     });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has("postId")) {
-        this.mode = "editpost";
+        this.mode = "edit";
         this.postId = paramMap.get("postId");
-        //show loading symbol
         this.loading = true;
-
-        this.postsService.retrievePost(this.postId).subscribe(postData => {
-          //hide loading symbol
+        this.PostManage.retrievePost(this.postId).subscribe(postData => {
           this.loading = false;
-
           this.post = {
             id: postData._id,
             title: postData.title,
             content: postData.content,
-            imgPath:null
+            imgPath: postData.imgPath
           };
-        this.form.setValue({
-          title: this.post.title,
-          content: this.post.content
+          this.form.setValue({
+            title: this.post.title,
+            content: this.post.content,
+            image: this.post.imgPath
+          });
         });
-      });
-        } else {
+      } else {
         this.mode = "create";
         this.postId = null;
       }
     });
   }
 
-  imageSelect(event: Event) //image selecting
-{
-  const chosenfile = (event.target as HTMLInputElement).files[0]; //a html element input as a file
-  this.form.patchValue({image: chosenfile}); //patch value allows you to target a single control (image)
-  this.form.get('image').updateValueAndValidity(); //validate
-  const reader = new FileReader();
-  reader.onload = () => { //function executed when it's done loading a resource
-    this.imgPrev = reader.result as string;
-  };
-  reader.readAsDataURL(chosenfile); //load the file
-}
+  imageSelect(event: Event) { //image selecting
+    const file = (event.target as HTMLInputElement).files[0]; //a html input as a file
+    this.form.patchValue({ image: file }); // patch value allows targetting of a single control, AKA image
+    this.form.get("image").updateValueAndValidity();// validation
+    const reader = new FileReader();
+    reader.onload = () => { //function is executed upon finishing the loading of a resource
+      this.imgPrev
+   = reader.result as string;
+    };
+    reader.readAsDataURL(file); //load the file
+  }
 
-  onSave() {
+  savePost() {
     if (this.form.invalid) {
       return;
     }
     this.loading = true;
     if (this.mode === "create") {
-      this.postsService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
+      this.PostManage.p_add(
+        this.form.value.title,
+        this.form.value.content,
+        this.form.value.image
+      );
     } else {
-      this.postsService.updatePost(
+      this.PostManage.updatePost(
         this.postId,
         this.form.value.title,
         this.form.value.content,
+        this.form.value.image
       );
     }
     this.form.reset();
