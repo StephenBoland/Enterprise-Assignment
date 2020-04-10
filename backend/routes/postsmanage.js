@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-
+const AuthorizationCheck = require("../AuthMiddleware/authentication-check");
 const Post = require("../models/post");
 
 const app = express.Router();
@@ -33,6 +33,7 @@ const storage = multer.diskStorage({
 //malter will look for a single file from image
 app.post(
   "",
+  AuthorizationCheck,//auth check
   multer({ storage: storage }).single("image"),
   (req, res, next) => { //POST to /api/posts
     const url = req.protocol + "://" + req.get("host");
@@ -54,7 +55,7 @@ app.post(
 );
 
 app.put( //create a new post
-  "/:id",
+  "/:id",AuthorizationCheck,//auth check
   multer({ storage: storage }).single("image"), //replace old post with the new post, essentially 'updating' it.
   (req, res, next) => {
     let imgPath = req.body.imgPath;
@@ -94,7 +95,7 @@ app.get("/:id", (req, res, next) => {//have mongoose check the db for an ID
   });
 });
 
-app.delete("/:id", (req, res, next) => { //deleting from backend database based off ID
+app.delete("/:id", AuthorizationCheck, (req, res, next) => { //deleting from backend database based off ID
   Post.deleteOne({ _id: req.params.id }).then(result => {
     console.log(result);
     res.status(200).json({ message: "Post deleted!" });
