@@ -22,14 +22,15 @@ export class UserAuthService {
     });
 
   }
-//logging in user
-  login(email:string, password:string) {
-    const AuthData: UserAuthData = {email:email, password:password};
-    this.HttpClient.post<{token}>("http://localhost:3000/api/user/login", AuthData)
+
+//loging in the user
+login(email: string, password: string) {
+  const authData: UserAuthData = {email: email, password: password};
+  this.HttpClient.post<{token: string}>("http://localhost:3000/api/user/login", authData)
     .subscribe(response => {
       const token = response.token;
-      this.token = token; //storing the token
-    });
-  }
-
+      this.token = token; //store the token
+      console.log(response);
+    })
+}
 }

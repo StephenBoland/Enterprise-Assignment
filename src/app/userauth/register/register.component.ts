@@ -14,7 +14,7 @@ export class RegisterComponent {
 //taking the user input from register form
   userRegister(form: NgForm)
   {
-    if (form.invalid)
+    if (form.invalid) //check if form is valid
     {
       return;
     }

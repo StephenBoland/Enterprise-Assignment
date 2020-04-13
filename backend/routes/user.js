@@ -27,39 +27,37 @@ app.post("/register",(req,res,next)=> {
 });
 });
 
-app.post("/login", (req,res,next)=>{
-  let getUser;
+app.post("/login", (req, res, next) => {
+  let fetchedUser;
   User.findOne({ email: req.body.email })
-  .then(user=>{
-    if(!user) { //check if a user exists
-      return res.status(401).json({message: 'Failed authentication'}); //user doesnt exist with this email
-    }//by inserting a value into becrypt, we can check if its the same as the hash'd password value, aka they are the same
-    getUser = user;
-    return bcrypt.compare(req.body.password, user.password); //find an instance of the model in db
-
-  })
-  .then(result => {
-    if (!result) {
-      return res.status(400).json({message: 'Failed authentication'});
-    }
-    //if result passes authentication checks, create a jwt token
-    const token = jwt.sign(
-    { email: getUser.email, getUser: user._id },
-    'development_string_secret_password',//pass in secret string pw
-    { expiresIn: '1h'}
-    ); //token expires after 1 hour
-    console.log(token);
-    res.status(200).json({
-      token: token
-    }); //success authenticated
-
-  })
-  .catch(er => {
-    console.log(er);
-    return res.status(400).json({message: 'Failed authentication'});
-
-  });
-
-
+    .then(user => {
+      if (!user) {
+        return res.status(401).json({
+          message: "Authentication failed" //user doesnt exist with this email
+        });
+      }
+      fetchedUser = user;
+      return bcrypt.compare(req.body.password, user.password); //by inserting a value into becrypt, we can check if its the same as the hash'd password value, aka they are the same
+    })
+    .then(result => {
+      if (!result) {
+        return res.status(401).json({
+          message: "Auth failed"
+        });
+      }
+      const token = jwt.sign(
+        { email: fetchedUser.email, userId: fetchedUser._id },
+        "secret_this_should_be_longer",
+        { expiresIn: "1h" }
+      );
+      res.status(200).json({
+        token: token
+      });
+    })
+    .catch(err => {
+      return res.status(401).json({
+        message: "Auth failed"
+      });
+    });
 });
 module.exports = app;
