@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Post } from "../post.model";
 import { PostManage } from "../posts.service";
 import { Subscription } from 'rxjs';
+import { UserAuthService } from "src/app/userauth/userauth.service";
 
 @Component({
   selector: "app-post-list",
@@ -10,11 +11,13 @@ import { Subscription } from 'rxjs';
 })
 
 export class PostListComponent implements OnInit, OnDestroy {
+  private AuthListenerSubscription : Subscription;
   posts: Post[] = [];
   loading = false;
   private postsSub: Subscription;
+  userAuthenticated = false;
 
-  constructor(public PostManage: PostManage) {}
+  constructor(public PostManage: PostManage, private UserAuthService:UserAuthService) {}
 
   ngOnInit() {
     this.loading = true;
@@ -24,6 +27,13 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.posts = posts;
       });
+      this.userAuthenticated = this.UserAuthService.UserAuthenticated(); //refreshing authentication
+      //authentication check
+      this.AuthListenerSubscription = this.UserAuthService.getAuthenticationStatus().subscribe(Authenticated => {
+        this.userAuthenticated = Authenticated;
+
+      });
+
   }
 
   onDelete(postId: string) {
@@ -32,5 +42,6 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.postsSub.unsubscribe();
+    this.AuthListenerSubscription.unsubscribe();
   }
 }

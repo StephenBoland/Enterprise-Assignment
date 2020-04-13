@@ -48,10 +48,11 @@ app.post("/login", (req, res, next) => {
       const token = jwt.sign(
         { email: fetchedUser.email, userId: fetchedUser._id },
         "secret_this_should_be_longer",
-        { expiresIn: "1h" }
+        { expiresIn: "1h" } //duration of token = 1 hour ( most optimal for security)
       );
       res.status(200).json({
-        token: token
+        token: token,
+        tokenExpiresIn: 3600
       });
     })
     .catch(err => {

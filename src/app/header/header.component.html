@@ -4,16 +4,22 @@
   </span>
   <span class="spacer"></span>
   <ul>
-    <li>
+    <!-- If a user is authenticated they can make a new post -->
+    <li *ngIf="userAuthenticated">
           <!-- Highlight the button if on the page -->
       <a mat-button routerLink="/createpost" routerLinkActive="mat-accent">New Post</a>
 
     </li>
-    <li>
+    <!-- If user is not authenticated (logged in), they can see login/register -->
+    <li *ngIf="!userAuthenticated">
       <a mat-button routerLink="/login" routerLinkActive="mat-accent">Login</a>
     </li>
-    <li>
+    <li *ngIf="!userAuthenticated">
       <a mat-button routerLink="/register" routerLinkActive="mat-accent">Register</a>
+    </li>
+    <!-- User must be logged in to log out -->
+    <li *ngIf="userAuthenticated">
+      <button mat-button (click)="userLogout()">Logout</button>
     </li>
   </ul>
 </mat-toolbar>
