@@ -28,7 +28,8 @@ export class PostManage {
               title: post.title,
               content: post.content,
               id: post._id,
-              imgPath: post.imgPath
+              imgPath: post.imgPath,
+              creator: post.creator
             };
           });
         })
@@ -91,23 +92,23 @@ export class PostManage {
     this.httpClient
       .put("http://localhost:3000/api/posts/" + id, postContent)
       .subscribe(response => {
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
-        const post: Post = { //save the form with new content
-          id: id,
-          title: title,
-          content: content,
-          imgPath: "" //getting img path back from mongo
-        };
-        updatedPosts[oldPostIndex] = post;
-        this.posts = updatedPosts;
-        this.p_Updated.next([...this.posts]);
+        // const updatedPosts = [...this.posts];
+        // const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
+        // const post: Post = { //save the form with new content
+        //   id: id,
+        //   title: title,
+        //   content: content,
+        //   imgPath: "" //getting img path back from mongo
+        // };
+        // updatedPosts[oldPostIndex] = post;
+        // this.posts = updatedPosts;
+        // this.p_Updated.next([...this.posts]);
         this.router.navigate(["/"]);//re-routing the user
       });
   }
 
   deletePost(postId: string) {
-    this.httpClient
+   return this.httpClient
       .delete("http://localhost:3000/api/posts/" + postId)
       .subscribe(() => {
         const updatedPosts = this.posts.filter(post => post.id !== postId);//Keep entries where claus is not equal, delete where it is equal.S

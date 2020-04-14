@@ -40,7 +40,8 @@ app.post(
     const post = new Post({ // pass in the model content
       title: req.body.title,
       content: req.body.content,
-      imgPath: url + "/images/" + req.file.filename // the img path want to store in db
+      imgPath: url + "/images/" + req.file.filename, // the img path want to store in db
+      creator: req.userData.userId
     });
     post.save().then(createdPost => {
       res.status(201).json({//return json data and status code 201 for confirmation of post added
@@ -70,8 +71,14 @@ app.put( //create a new post
       imgPath: imgPath
     });
     console.log(post);
-    Post.updateOne({ _id: req.params.id }, post).then(result => {
-      res.status(200).json({ message: "Update successful!" });
+    Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then(result => {
+      console.log(result);
+      if(result.nModified > 0) { //Nmodified > 0 means an edit was made
+        res.status(200).json({ message: "Update successful!" });
+
+      }else{
+        res.status(401).json({ message: "No authority" });
+      }
     });
   }
 );
@@ -96,9 +103,14 @@ app.get("/:id", (req, res, next) => {//have mongoose check the db for an ID
 });
 
 app.delete("/:id", AuthorizationCheck, (req, res, next) => { //deleting from backend database based off ID
-  Post.deleteOne({ _id: req.params.id }).then(result => {
-    console.log(result);
-    res.status(200).json({ message: "Post deleted!" });
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(result => {
+    if(result.n > 0) {
+      console.log(result);
+      res.status(200).json({ message: "Update successful!" });
+
+    }else{
+      res.status(401).json({ message: "No authority" });
+    }
   });
 });
 
