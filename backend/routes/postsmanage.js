@@ -63,14 +63,16 @@ app.put( //create a new post
     if (req.file) { //if req file exists, a new file was uploaded
       const url = req.protocol + "://" + req.get("host"); //get new url
       imgPath = url + "/images/" + req.file.filename
+
     }
     const post = new Post({
       _id: req.body.id,
       title: req.body.title,
       content: req.body.content,
-      imgPath: imgPath
+      imgPath: imgPath,
+      creator: req.userData.userId
     });
-    console.log(post);
+    console.log(post); //user can only edit if they made the post
     Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post).then(result => {
       console.log(result);
       if(result.nModified > 0) { //Nmodified > 0 means an edit was made
@@ -101,7 +103,7 @@ app.get("/:id", (req, res, next) => {//have mongoose check the db for an ID
     }
   });
 });
-
+//User can only delete if they made the post
 app.delete("/:id", AuthorizationCheck, (req, res, next) => { //deleting from backend database based off ID
   Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(result => {
     if(result.n > 0) {

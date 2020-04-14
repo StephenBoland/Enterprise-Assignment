@@ -11,7 +11,7 @@
       <img [src]="post.imgPath" [alt]="post.title">
     </div>
     <!-- Show if authenticated -->
-    <mat-action-row *ngIf="userAuthenticated">
+    <mat-action-row *ngIf="userAuthenticated && userId == post.creator">
           <!-- Refer to the post and the post id in routerlink. -->
       <a mat-button color="primary" [routerLink]="['/editpost', post.id]">EDIT</a>
       <button mat-button color="warn" (click)="onDelete(post.id)">DELETE</button>

@@ -45,12 +45,17 @@ export class PostManage {
   }
 
   retrievePost(id: string) {
-    return this.httpClient.get<{ _id: string, title: string, content: string, imgPath: string }>( //expect the args + image path from db
-      "http://localhost:3000/api/posts/" + id
-    );
+    return this.httpClient.get<{
+       _id: string;
+        title: string;
+        content: string;
+        imgPath: string;
+      creator:string;
+     }>( //expect the args + image path from db
+      "http://localhost:3000/api/posts/" + id );
   }
 
-  p_add(title: string, content: string, image: File) {
+  p_add(title: string, content: string, image: File, creator:string) {
     const postContent = new FormData(); //form data lets combination of text and file values
     postContent.append("title", title);
     postContent.append("content", content);
@@ -65,7 +70,8 @@ export class PostManage {
           id: responseData.post.id,
           title: title,
           content: content,
-          imgPath: responseData.post.imgPath
+          imgPath: responseData.post.imgPath,
+          creator: responseData.post.creator
         };
         this.posts.push(post);
         this.p_Updated.next([...this.posts]);
@@ -86,7 +92,8 @@ export class PostManage {
         id: id,
         title: title,
         content: content,
-        imgPath: image
+        imgPath: image,
+        creator:null
       };
     }
     this.httpClient
