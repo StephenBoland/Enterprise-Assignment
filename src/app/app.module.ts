@@ -8,6 +8,7 @@ import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { HeaderComponent } from "./header/header.component";
 import { PostListComponent } from "./posts/post-list/post-list.component";
 import { AppRoutingModule } from "./app-routing.module";
+import { HomeComponent } from './Home/home.component';
 
 import {
   MatInputModule,
@@ -15,7 +16,9 @@ import {
   MatProgressSpinnerModule,
   MatCardModule,
   MatButtonModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatIconModule,
+
 } from "@angular/material";
 import { LoginComponent } from "./userauth/login/login.component";
 import { RegisterComponent } from "./userauth/register/register.component";
@@ -23,6 +26,7 @@ import { AuthInterceptor } from "./userauth/auth-interceptor";
 // declare any new components here
 @NgModule({
   declarations: [
+    HomeComponent,
     AppComponent,
     HeaderComponent,
     PostCreateComponent,
@@ -31,6 +35,7 @@ import { AuthInterceptor } from "./userauth/auth-interceptor";
     RegisterComponent
   ],
   imports: [
+    MatIconModule,
     FormsModule,
     BrowserModule,
     AppRoutingModule,

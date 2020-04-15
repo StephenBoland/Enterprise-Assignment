@@ -1,15 +1,15 @@
 <mat-toolbar color="primary">
   <span>
-    <a routerLink="/">View Posts</a>
+    <a routerLink="/"></a>
   </span>
   <span class="spacer">
+    <div class="example-button-container">
+      <button mat-fab color="warn" aria-label="Example icon button with a home icon">
+        <mat-icon>home</mat-icon>
+      </button>
+    </div>
 
-    <!-- If a user is authenticated they can make a new post -->
-    <li *ngIf="userAuthenticated">
-          <!-- Highlight the button if on the page -->
-      <a mat-button routerLink="/createpost" routerLinkActive="mat-accent">New Post</a>
 
-    </li>
   </span>
     <ul>
     <!-- If user is not authenticated (logged in), they can see login/register -->
@@ -25,3 +25,15 @@
     </li>
   </ul>
 </mat-toolbar>
+
+<h3>Raised Buttons</h3>
+<div class="example-button-row">
+  <button mat-raised-button>Basic</button>
+  <button mat-raised-button color="primary">Primary</button>
+  <button mat-raised-button color="accent">Accent</button>
+  <button mat-raised-button color="warn">Warn</button>
+  <button mat-raised-button disabled>Disabled</button>
+  <a mat-raised-button routerLink=".">Link</a>
+</div>
+
+

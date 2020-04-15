@@ -5,8 +5,10 @@ import { PostCreateComponent } from "./posts/post-create/post-create.component";
 import { LoginComponent } from "./userauth/login/login.component";
 import { RegisterComponent } from "./userauth/register/register.component";
 import { AuthenticationGaurd } from "./userauth/auth.gaurd";
+import { HomeComponent } from "./Home/home.component";
 const routes: Routes = [
-  { path: '', component: PostListComponent },
+  { path: '', component:HomeComponent },
+  { path: 'postlist', component: PostListComponent },
   { path: 'createpost', component: PostCreateComponent, canActivate:[AuthenticationGaurd] }, //create post page, Guarded
   { path: 'editpost/:postId', component: PostCreateComponent, canActivate:[AuthenticationGaurd] }, //edit post page, Gaurded
   { path: 'login', component: LoginComponent }, //login page
