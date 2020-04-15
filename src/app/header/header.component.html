@@ -1,15 +1,17 @@
 <mat-toolbar color="primary">
   <span>
-    <a routerLink="/">Messages</a>
+    <a routerLink="/">View Posts</a>
   </span>
-  <span class="spacer"></span>
-  <ul>
+  <span class="spacer">
+
     <!-- If a user is authenticated they can make a new post -->
     <li *ngIf="userAuthenticated">
           <!-- Highlight the button if on the page -->
       <a mat-button routerLink="/createpost" routerLinkActive="mat-accent">New Post</a>
 
     </li>
+  </span>
+    <ul>
     <!-- If user is not authenticated (logged in), they can see login/register -->
     <li *ngIf="!userAuthenticated">
       <a mat-button routerLink="/login" routerLinkActive="mat-accent">Login</a>

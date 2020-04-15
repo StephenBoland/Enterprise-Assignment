@@ -28,7 +28,7 @@ app.post("/register",(req,res,next)=> {
 });
 
 app.post("/login", (req, res, next) => {
-  let fetchedUser;
+  let thisUser;
   User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
@@ -36,7 +36,7 @@ app.post("/login", (req, res, next) => {
           message: "Authentication failed" //user doesnt exist with this email
         });
       }
-      fetchedUser = user;
+      thisUser = user;
       return bcrypt.compare(req.body.password, user.password); //by inserting a value into becrypt, we can check if its the same as the hash'd password value, aka they are the same
     })
     .then(result => {
@@ -46,14 +46,14 @@ app.post("/login", (req, res, next) => {
         });
       }
       const token = jwt.sign(
-        { email: fetchedUser.email, userId: fetchedUser._id },
+        { email: thisUser.email, userId: thisUser._id },
         "secret_this_should_be_longer",
         { expiresIn: "1h" } //duration of token = 1 hour ( most optimal for security)
       );
       res.status(200).json({
         token: token,
         tokenExpiresIn: 3600,
-        userId : fetchedUser._id
+        userId : thisUser._id
       });
     })
     .catch(err => {
