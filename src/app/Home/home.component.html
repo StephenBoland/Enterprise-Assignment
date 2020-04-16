@@ -1,0 +1,32 @@
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+<div id="page-container">
+  <div id="content-wrap">
+<h1 class="mat-display-2">Welcome to the Community Post Form</h1>
+
+   <!-- If a user is authenticated they can make a new post -->
+   <p class ="mat-headline">The community post form lets user's create and share posts!</p>
+   <ul class="mat-body-strong">
+     <li>
+       Create a post with a title, description and image.
+     </li>
+     <li>
+       Update or delete your post.
+     </li>
+     <li>
+       View other user's posts.
+     </li>
+   </ul>
+<div class="btn-group">
+
+  <button class="test"  *ngIf="userAuthenticated" mat-raised-button color="primary" a [routerLink]="['/createpost']" routerLinkActive="router-link-active" >Create Post</button>
+  <button class="test" mat-raised-button color="primary" a [routerLink]="['/postlist']" routerLinkActive="router-link-active" >View Posts</button>
+
+</div>
+</div>
+</div>
+
+<footer id="footer">
+  <p>Stephen Boland
+  </p>
+  <p>C16345966</p>
+</footer>

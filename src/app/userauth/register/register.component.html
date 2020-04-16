@@ -2,13 +2,16 @@
   <!-- show spinner if nfIf is true -->
 <mat-spinner *ngIf="loading"></mat-spinner>
 <form (submit)="userRegister(registerForm)" #registerForm="ngForm" *ngIf="!loading">
-  <mat-form-field>
-    <input matInput name="email" placeholder="E-Mail" #emailInput="ngModel" ngModel type = "email" required email>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput name="email" placeholder="E.g : stephen@gmail.com" #emailInput="ngModel" ngModel type = "email" required email>
     <mat-error *ngIf="emailInput.invalid">Please enter an email.</mat-error>
   </mat-form-field>
 
 
-  <mat-form-field>
+
+  <mat-form-field appearance="fill">
     <input type="password" matInput name="password" ngModel placeholder="Password" #passwordInput required>
     <mat-error *ngIf="passwordInput.invalid" >Please enter a password.</mat-error>
   </mat-form-field>

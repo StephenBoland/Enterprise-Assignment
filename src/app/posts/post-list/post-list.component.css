@@ -16,13 +16,13 @@ mat-spinner {
 }
 
 .post-image img {
-  width: 50%;
+  width: 70%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }
 
 .mat-accordion .mat-expansion-panel:last-of-type {
   border-bottom-right-radius: 4px;
-  max-width: 80%;
+  max-width: 100%;
   border-bottom-left-radius: 4px;
   align-content: center;
 }
