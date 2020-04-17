@@ -2,7 +2,9 @@
   display: block;
   margin-top: 1rem;
 }
-
+.create {
+  margin:6px;
+}
 mat-spinner {
   margin: auto;
 }

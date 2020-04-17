@@ -6,6 +6,9 @@
    <!-- If a user is authenticated they can make a new post -->
    <p class ="mat-headline">The community post form lets user's create and share posts!</p>
    <ul class="mat-body-strong">
+     <li>
+       Begin by creating an account by clicking the register button in the top right.
+     </li>
 
      <li>
        Create a post with a title, description and image.
@@ -19,8 +22,8 @@
    </ul>
 <div class="btn-group">
 
-  <button class="test"  *ngIf="userAuthenticated" mat-raised-button color="primary" a [routerLink]="['/createpost']" routerLinkActive="router-link-active" >Create Post</button>
-  <button class="test" mat-raised-button color="primary" a [routerLink]="['/postlist']" routerLinkActive="router-link-active" >View Posts</button>
+  <button class="create"  *ngIf="userAuthenticated" mat-raised-button color="primary" a [routerLink]="['/createpost']" routerLinkActive="router-link-active" >Create Post</button>
+  <button class="create" mat-raised-button color="primary" a [routerLink]="['/postlist']" routerLinkActive="router-link-active" >View Posts</button>
 
 </div>
 </div>
