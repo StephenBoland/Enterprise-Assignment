@@ -35,6 +35,10 @@ export class UserAuthService {
     this.HttpClient.post("http://localhost:3000/api/user/register",AuthData)
     .subscribe(Response => {
       console.log(Response);
+      this.login(AuthData.email, AuthData.password);
+      this.app.navigate(['home']);//redirect after register
+
+
     });
 
   }

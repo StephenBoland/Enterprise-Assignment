@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { Subscription } from "rxjs";
 import { UserAuthService } from "../userauth/userauth.service";
+
 @Component({
   selector: 'app-home',
   templateUrl: '/home.component.html',
@@ -10,8 +11,7 @@ import { UserAuthService } from "../userauth/userauth.service";
 export  class HomeComponent {
   userAuthenticated = false; //default authentication is false
   private AuthListenerSubscription : Subscription;
-
-  constructor(private UserAuthService: UserAuthService ) {}
+  constructor(private UserAuthService: UserAuthService) {}
 
   ngOnInit () {
     this.userAuthenticated = this.UserAuthService.UserAuthenticated(); //refreshing authentication

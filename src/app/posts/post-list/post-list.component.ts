@@ -20,7 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   constructor(public PostManage: PostManage, private UserAuthService:UserAuthService) {}
 
-  ngOnInit() {
+  ngOnInit() { //oninit is used to handle additional initializiation
     this.loading = true;
     this.PostManage.getPosts();
     this.userId = this.UserAuthService.getUserId();
