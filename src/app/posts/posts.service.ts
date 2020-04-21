@@ -1,3 +1,4 @@
+//this file is responsible for handling the logic behind post actions.
 import { Post } from "./post.model";
 
 import { HttpClient } from "@angular/common/http";
@@ -16,7 +17,7 @@ export class PostManage {
   private p_Updated = new Subject<Post[]>();
 
   constructor(private httpClient: HttpClient, private router: Router) {}
-
+//get all posts
   getPosts() {
     this.httpClient
       .get<{ message: string; posts: any }>
@@ -43,7 +44,7 @@ export class PostManage {
   postUpdateListener() {
     return this.p_Updated.asObservable();
   }
-
+//get single post
   retrievePost(id: string) {
     return this.httpClient.get<{
        _id: string;
@@ -54,7 +55,7 @@ export class PostManage {
      }>( //expect the args + image path from db
       "http://localhost:3000/api/posts/" + id );
   }
-
+//adding a post
   p_add(title: string, content: string, image: File, creator:string) {
     const postContent = new FormData(); //form data lets combination of text and file values
     postContent.append("title", title);
@@ -75,7 +76,7 @@ export class PostManage {
         };
         this.posts.push(post);
         this.p_Updated.next([...this.posts]);
-        this.router.navigate(["/"]);
+        this.router.navigate(["/postlist"]);
       });
   }
 //executed upon saving an edit
@@ -99,6 +100,7 @@ export class PostManage {
     this.httpClient
       .put("http://localhost:3000/api/posts/" + id, postContent)
       .subscribe(response => {
+        //moved this logic up
         // const updatedPosts = [...this.posts];
         // const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
         // const post: Post = { //save the form with new content
@@ -113,7 +115,7 @@ export class PostManage {
         this.router.navigate(["/"]);//re-routing the user
       });
   }
-
+//deleting a post
   deletePost(postId: string) {
    return this.httpClient
       .delete("http://localhost:3000/api/posts/" + postId)

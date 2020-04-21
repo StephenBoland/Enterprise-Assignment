@@ -1,6 +1,7 @@
+//This code is not mine, it has been taken from MEAN stack guide from ACADEMIND ( NOt able to link as its pro version)
 import { AbstractControl } from "@angular/forms";
 import { Observable, Observer, of } from "rxjs";
- 
+
 export const mimeType = (
   control: AbstractControl
 ): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {

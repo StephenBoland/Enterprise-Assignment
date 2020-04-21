@@ -21,14 +21,15 @@ export class UserAuthService {
   UserAuthenticated() {
     return this.Authenticated;
   }
-
+//getting the user's id
   getUserId() {
     return this.userId;
   }
-
+//getting the user's auth token
   getToken() {
     return this.token;
   }
+
 //registering a user
   userCreate(email:string, password:string ){
     const AuthData: UserAuthData = {email:email, password:password};
@@ -37,10 +38,7 @@ export class UserAuthService {
       console.log(Response);
       this.login(AuthData.email, AuthData.password);
       this.app.navigate(['home']);//redirect after register
-
-
     });
-
   }
 
 //loging in the user

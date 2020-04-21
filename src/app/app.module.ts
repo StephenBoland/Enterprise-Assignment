@@ -18,11 +18,14 @@ import {
   MatButtonModule,
   MatToolbarModule,
   MatIconModule,
+  MatDialogModule,
 
 } from "@angular/material";
 import { LoginComponent } from "./userauth/login/login.component";
 import { RegisterComponent } from "./userauth/register/register.component";
 import { AuthInterceptor } from "./userauth/auth-interceptor";
+import { ErrorHandlerInterceptor } from "src/errorhandling-interceptor";
+import { ErrorHandlingComponent } from "./ErrorHandling/errorhandling.component";
 // declare any new components here
 @NgModule({
   declarations: [
@@ -32,7 +35,8 @@ import { AuthInterceptor } from "./userauth/auth-interceptor";
     PostCreateComponent,
     PostListComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ErrorHandlingComponent
   ],
   imports: [
     MatIconModule,
@@ -47,11 +51,14 @@ import { AuthInterceptor } from "./userauth/auth-interceptor";
     MatExpansionModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
   ],
   providers: [
-   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+   { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents:[ErrorHandlingComponent]
 })
 export class AppModule {}
